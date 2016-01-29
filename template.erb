@@ -1,10 +1,6 @@
-<% if upstreams %>
 upstream <%= upstreams.name %> {
-	<% upstreams.services.each do |url| %>
-		upstream <%= url %>;
-	<% end %>
+	<% upstreams.services.each { |url| %> upstream <%= url %>; <% } %>
 }
-<% end %>
 
 <% if https %>
 server {
@@ -12,8 +8,8 @@ server {
 	server_name	<%= https.host %>;
 
 	include tls_config;
-	ssl_certificate <%= https.certificate %>
-	ssl_certificate_key <%= https.key %>
+	ssl_certificate <%= https.certificate %>;
+	ssl_certificate_key <%= https.key %>;
 
 	location / {
 		proxy_pass http://<%= upstreams.name %>;
@@ -27,9 +23,13 @@ server {
 	listen	:80;
 	server_name	<%= http.host %>;
 
-	location / {
-		proxy_pass http://<%= upstreams.name %>;
-		include proxy_params;
-	}
+	<% if http.redirect_to_https %>
+		return 301 https://$server_name$request_uri;
+	<% else %>
+		location / {
+			proxy_pass http://<%= upstreams.name %>;
+			include proxy_params;
+		}
+	<% end %>
 }
 <% end %>

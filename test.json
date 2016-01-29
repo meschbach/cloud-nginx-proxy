@@ -2,6 +2,8 @@
 	"name" : "community",
 	"host" : "community.meschbach.com",
 	"https" : {
+		"key" : "private/com.meschbach.community_key",
+		"certificate" : "private/com.meschbach.community_certificate"
 	},
 	"http" : { "https-redirect" : true }
 }
