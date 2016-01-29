@@ -48,6 +48,10 @@ end
 #
 def translate( input, upstreams )
 	descriptor = JSON.parse( input )
+	unless descriptor["name"]
+		raise "'name' field must be provided to configure upstreams"
+	end
+
 	templateContent = File.read( "template.erb" )
 
 	services = OpenStruct.new

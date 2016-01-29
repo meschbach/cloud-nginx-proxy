@@ -2,5 +2,6 @@
 	"name" : "community",
 	"host" : "community.meschbach.com",
 	"https" : {
-	}
+	},
+	"http" : { "https-redirect" : true }
 }
