@@ -15,6 +15,18 @@ class RegisterHost
 	end
 end
 
-host_name = "example.test"
-config_contents = File.read("test.json")
-RegisterHost.new.register( "/lb/", host_name, config_contents )
+#
+# CLI
+#
+require 'trollop'
+opts = Trollop::options do
+	opt :etcd_prefix, "etcd load balancer prefix", :default => "/lb"
+	opt :host_name, "Host name to configure", :default => "example.test"
+	opt :config_file, "Configuration file to be loaded", :type => :string, :required => true
+end
+
+etcd_prefix = opts[:etcd_prefix]
+host_name = opts[:host_name]
+config_contents = File.read( opts[:config_file] )
+
+RegisterHost.new.register( etcd_prefix, host_name, config_contents )

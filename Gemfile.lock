@@ -4,12 +4,14 @@ GEM
     etcd (0.3.0)
       mixlib-log
     mixlib-log (1.6.0)
+    trollop (2.1.2)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
   etcd
+  trollop
 
 BUNDLED WITH
    1.11.2
