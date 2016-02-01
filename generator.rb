@@ -60,6 +60,13 @@ end
 #
 def translate( input, upstreams )
 	descriptor = JSON.parse( input )
+	translate_host( descriptor, upstreams )
+end
+
+#
+#
+#
+def translate_host( descriptor, upstreams )
 	unless descriptor["name"]
 		raise "'name' field must be provided to configure upstreams"
 	end
@@ -81,8 +88,6 @@ def translate( input, upstreams )
 	services = OpenStruct.new
 	services.name =  descriptor["name"] || "default-upstream"
 	services.services = upstreams
-
-	puts services
 
 	b = TemplateEval.new( descriptor, services ).get_binding
 	erb = ERB.new( templateContent )
