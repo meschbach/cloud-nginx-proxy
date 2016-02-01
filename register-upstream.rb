@@ -15,6 +15,20 @@ class RegisterClient
 	end
 end
 
-node_name = ARGV.length > 1 ? ARGV[1] : "node-0"
-node_url = ARGV[0]  || "http://localhost:9292"
-RegisterClient.new.register( "/lb/", "example.test", node_name, node_url)
+#
+# CLI
+#
+require 'trollop'
+opts = Trollop::options do
+	opt :etcd_prefix, "etcd load balancer prefix", :default => "/lb"
+	opt :host_name, "Host name to configure", :default => "example.test"
+	opt :node_name, "etcd key to store the upstream under", :type => :string, :required => true
+	opt :node_url, "URL to provide as upstream for the Load Balancer", :type => :string, :required => true
+end
+
+etcd_prefix = opts[:etcd_prefix]
+host_name = opts[:host_name]
+node_name = opts[:node_name]
+node_url = opts[:node_url]
+
+RegisterClient.new.register( etcd_prefix, host_name, node_name, node_url)
