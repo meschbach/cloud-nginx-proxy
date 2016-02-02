@@ -7,6 +7,7 @@ class EtcdHostConfig
 	def initialize( host_base )
 		@etcd = Etcd.client
 		@base_path = host_base
+		puts "Using #{@base_path} for host configuration"
 	end
 
 	def config
@@ -32,11 +33,17 @@ class EtcdHostConfig
 end
 
 class EtcdExecWatcherBridge
+	def initialize( opts )
+		@etcd_key_prefix = opts[:etcd_prefix]
+		@lb_dir = opts[:lb_dir]
+		@notify_key = opts[:notify_key]
+	end
+
 	#
 	# TOOD: Make configurable
 	#
 	def etcd_key_prefix
-		"/lb/"
+		@etcd_key_prefix
 	end
 
 	def changed_key
@@ -73,15 +80,30 @@ class EtcdExecWatcherBridge
 
 	def update( host )
 		host_root = etcd_key_prefix + host
-		host = EtcdHostConfig.new( etcd_key_prefix + host )
+		host = EtcdHostConfig.new( host_root )
 		config = host.config
 		upstreams = host.upstreams
 		result = translate_host( config, upstreams )
 
-		target_file = ARGV[0]  + "/" + host.config["name"]
+		target_file = @lb_dir + "/" + host.config["name"]
 		puts "Writing to #{target_file}"
 		File.write( target_file, result )
+
+		if @notify_key
+			client = Etcd.client
+			client.set( @notify_key, value: "Updated #{host} @" + DateTime.now )
+		end
 	end
 end
 
-EtcdExecWatcherBridge.new.etcd_exec
+#
+# CLI
+#
+require 'trollop'
+opts = Trollop::options do
+	opt :etcd_prefix, "etcd load balancer prefix", :default => "/lb"
+	opt :lb_dir, "Place to store the load balancer configurations files", :type => :string, :required => true
+	opt :notify_key, "Key to notify nginx on the target host to reload the configuration", :type => :string
+end
+
+EtcdExecWatcherBridge.new(opts).etcd_exec

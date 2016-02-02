@@ -7,6 +7,10 @@ require 'etcd'
 #
 class RegisterClient
 	def register( prefix, host, name, url )
+		unless prefix.end_with? "/"
+			prefix = prefix + "/"
+		end
+
 		base_path = prefix + host
 		etcdctl = Etcd.client
 		node_path = base_path + "/" + name
