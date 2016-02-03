@@ -35,6 +35,7 @@ end
 class EtcdExecWatcherBridge
 	def initialize( opts )
 		@etcd_key_prefix = opts[:etcd_prefix]
+		@etcd_key_prefix += "/" unless @etcd_key_prefix.end_with? "/"
 		@lb_dir = opts[:lb_dir]
 		@notify_key = opts[:notify_key]
 	end
@@ -56,11 +57,11 @@ class EtcdExecWatcherBridge
 
 	def lb_key_parts
 		unless changed_key.start_with? etcd_key_prefix
-			puts "ERROR: prefix mismatch, got #{etcd_key}, expected to start with #{prefix}"
+			puts "ERROR: prefix mismatch, got #{changed_key}, expected to start with #{etcd_key_prefix}"
 			exit -2
 		end
-		puts "Updating becuase #{change_key} has changed."
 		modified_key = changed_key[etcd_key_prefix.length..-1]
+		puts "Updating becuase #{changed_key} has changed, host specific key: #{modified_key}."
 
 		parts = modified_key.split("/")
 
