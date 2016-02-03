@@ -47,11 +47,11 @@ class EtcdExecWatcherBridge
 	end
 
 	def changed_key
-		ENV["ETCD_WATCH_KEY"]
+		ENV["ETCD_WATCH_KEY"] or raise "EtcD watch key not found"
 	end
 
 	def changed_value
-		ENV["ETCD_WATCH_VALUE"]
+		ENV["ETCD_WATCH_VALUE"] or raise "EtcD watch value not found"
 	end
 
 	def lb_key_parts
