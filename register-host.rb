@@ -11,6 +11,7 @@ class RegisterHost
 		base_path = prefix + host
 		etcdctl = Etcd.client
 		node_path = base_path + "/config"
+		puts "Config -> #{node_path}"
 		etcdctl.set( node_path, value: config_contents )
 	end
 end
@@ -26,6 +27,8 @@ opts = Trollop::options do
 end
 
 etcd_prefix = opts[:etcd_prefix]
+etcd_prefix += "/" unless etcd_prefix.end_with? "/"
+
 host_name = opts[:host_name]
 config_contents = File.read( opts[:config_file] )
 

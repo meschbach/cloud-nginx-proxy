@@ -59,6 +59,7 @@ class EtcdExecWatcherBridge
 			puts "ERROR: prefix mismatch, got #{etcd_key}, expected to start with #{prefix}"
 			exit -2
 		end
+		puts "Updating becuase #{change_key} has changed."
 		modified_key = changed_key[etcd_key_prefix.length..-1]
 
 		parts = modified_key.split("/")
@@ -80,6 +81,7 @@ class EtcdExecWatcherBridge
 
 	def update( host )
 		host_root = etcd_key_prefix + host
+		puts "Host configuration root #{host_root}"
 		host = EtcdHostConfig.new( host_root )
 		config = host.config
 		upstreams = host.upstreams
