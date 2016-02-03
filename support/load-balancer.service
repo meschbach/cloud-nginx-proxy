@@ -1,0 +1,13 @@
+[Unit]
+Description=nginx load balancing configuration
+After=network.target
+
+[Service]
+User=www-data
+ExecStart=/opt/coreos/bin/etcdctl exec-watch /ls/services --recursive -- /opt/mee/cloud-load-balancer/bin/watcher --lb-dir /tmp/test --etcd-prefix /lb/services --notify-key /lb/reload
+Nice=15
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
