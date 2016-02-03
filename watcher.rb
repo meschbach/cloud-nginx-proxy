@@ -94,7 +94,7 @@ class EtcdExecWatcherBridge
 
 		if @notify_key
 			client = Etcd.client
-			client.set( @notify_key, value: "Updated #{host} @" + DateTime.now )
+			client.set( @notify_key, value: "Updated #{host} @" + DateTime.now.to_s )
 		end
 	end
 end
