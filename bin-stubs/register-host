@@ -1,0 +1,7 @@
+#!/bin/bash
+
+export RBENV_ROOT=/opt/rbenv/home
+export PATH=$RBENV_ROOT/bin:$RBENV_HOME/shims:$PATH
+
+cd /opt/mee/cloud-load-balancer/current
+exec rbenv exec bundle exec ruby register-host.rb "$@"
