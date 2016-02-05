@@ -4,7 +4,7 @@ upstream <%= upstreams.name %> {
 
 <% if https %>
 server {
-	listen	:443 ssl http2;
+	listen	*:443 ssl http2;
 	server_name	<%= https.host %>;
 
 	include tls_config;
@@ -20,7 +20,7 @@ server {
 
 <% if http %>
 server {
-	listen	:80;
+	listen	*:80;
 	server_name	<%= http.host %>;
 
 	<% if http.redirect_to_https %>
