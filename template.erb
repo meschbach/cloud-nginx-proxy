@@ -1,5 +1,5 @@
 upstream <%= upstreams.name %> {
-	<% upstreams.services.each { |url| %> upstream <%= url %>; <% } %>
+	<% upstreams.services.each { |url| %> server <%= url %>; <% } %>
 }
 
 <% if https %>
