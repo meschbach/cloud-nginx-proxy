@@ -38,6 +38,8 @@ class EtcdExecWatcherBridge
 		@etcd_key_prefix += "/" unless @etcd_key_prefix.end_with? "/"
 		@lb_dir = opts[:lb_dir]
 		@notify_key = opts[:notify_key]
+
+		@template = opts[:template]
 	end
 
 	#
@@ -86,7 +88,7 @@ class EtcdExecWatcherBridge
 		host = EtcdHostConfig.new( host_root )
 		config = host.config
 		upstreams = host.upstreams
-		result = translate_host( config, upstreams )
+		result = translate_host( config, upstreams, @template )
 
 		target_file = @lb_dir + "/" + host.config["name"]
 		puts "Writing to #{target_file}"
@@ -107,6 +109,7 @@ opts = Trollop::options do
 	opt :etcd_prefix, "etcd load balancer prefix", :default => "/lb"
 	opt :lb_dir, "Place to store the load balancer configurations files", :type => :string, :required => true
 	opt :notify_key, "Key to notify nginx on the target host to reload the configuration", :type => :string
+	opt :template, "Use an alternative ERB template for dpeloyment", :type => :string
 end
 
 EtcdExecWatcherBridge.new(opts).etcd_exec

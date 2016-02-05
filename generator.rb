@@ -66,7 +66,7 @@ end
 #
 #
 #
-def translate_host( descriptor, upstreams )
+def translate_host( descriptor, upstreams, templateFile = nil )
 	unless descriptor["name"]
 		raise "'name' field must be provided to configure upstreams"
 	end
@@ -83,7 +83,7 @@ def translate_host( descriptor, upstreams )
 		end
 	end
 
-	templateContent = File.read( "template.erb" )
+	templateContent = File.read( templateFile || "template.erb" )
 
 	services = OpenStruct.new
 	services.name =  descriptor["name"] || "default-upstream"
