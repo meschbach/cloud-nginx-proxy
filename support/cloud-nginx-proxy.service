@@ -1,6 +1,6 @@
 [Unit]
 Description=nginx reverse proxy reconfiguration
-After=network.target etcd2.service
+After=network-online.target etcd2.service
 
 [Service]
 SyslogIdentifier=cloud-proxy-configuration
