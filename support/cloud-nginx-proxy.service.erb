@@ -5,7 +5,7 @@ After=network-online.target etcd2.service
 [Service]
 SyslogIdentifier=cloud-proxy-configuration
 User=www-data
-ExecStart=/opt/coreos/bin/etcdctl exec-watch <%= etcd_key_base %> --recursive -- /opt/mee/cloud-nginx-proxy/bin/watcher --lb-dir <%= ngnix_config %> --etcd-prefix <%= etcd_key_base %> --notify-key <%= etcd_nginx_restart_key %>
+ExecStart=/opt/coreos/bin/etcdctl exec-watch <%= etcd.watch_base %> --recursive -- /opt/mee/cloud-nginx-proxy/bin/watcher --lb-dir <%= nginx.dir %> --etcd-prefix <%= etcd.watch_base %> --notify-key <%= nginx.notify_key%>
 Nice=15
 Restart=always
 RestartSec=10
