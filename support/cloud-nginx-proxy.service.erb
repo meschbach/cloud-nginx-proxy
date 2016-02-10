@@ -1,0 +1,14 @@
+[Unit]
+Description=nginx reverse proxy reconfiguration
+After=network-online.target etcd2.service
+
+[Service]
+SyslogIdentifier=cloud-proxy-configuration
+User=www-data
+ExecStart=/opt/coreos/bin/etcdctl exec-watch <%= etcd_key_base %> --recursive -- /opt/mee/cloud-nginx-proxy/bin/watcher --lb-dir <%= ngnix_config %> --etcd-prefix <%= etcd_key_base %> --notify-key <%= etcd_nginx_restart_key %>
+Nice=15
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
