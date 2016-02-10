@@ -1,8 +1,9 @@
 [Unit]
-Description=nginx load balancing configuration
-After=network.target
+Description=nginx reverse proxy reconfiguration
+After=network.target etcd2.service
 
 [Service]
+SyslogIdentifier=cloud-proxy-configuration
 User=www-data
 ExecStart=/opt/coreos/bin/etcdctl exec-watch /ls/services --recursive -- /opt/mee/cloud-load-balancer/bin/watcher --lb-dir /tmp/test --etcd-prefix /lb/services --notify-key /lb/reload
 Nice=15
