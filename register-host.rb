@@ -1,4 +1,7 @@
-#!/bin/bash ruby
+#!/bin/env ruby
+
+require 'rubygems'
+require 'bundler/setup'
 
 require 'etcd'
 require 'json'
