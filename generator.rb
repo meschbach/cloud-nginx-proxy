@@ -12,7 +12,7 @@ class TemplateEval
 		if upstream && upstream.services && !upstream.services.empty?
 			@upstreams = upstream
 		else
-			@upstreams = false
+			raise "upstreams must be defined."
 		end
 		@descriptor = descriptor
 	end
@@ -87,6 +87,7 @@ def translate_host( descriptor, upstreams, templateFile = nil )
 
 	services = OpenStruct.new
 	services.name =  descriptor["name"] || "default-upstream"
+	puts "Upstream name: #{services.name}"
 	services.services = upstreams
 
 	b = TemplateEval.new( descriptor, services ).get_binding
