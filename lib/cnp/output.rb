@@ -18,7 +18,7 @@ module CNP
 		end
 
 		def generate_upstream( host, config, upstreams )
-			result = translate_host( config, upstreams, @template )
+			result = CNP::translate_host( config, upstreams, @template )
 
 			target_file = @output_base + "/" + host.config["name"]
 			puts "Writing to #{target_file}"
