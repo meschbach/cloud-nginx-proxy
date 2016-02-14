@@ -4,6 +4,7 @@
 #
 ########################################
 require 'cnp/etcd'
+require 'cnp/template'
 
 module CNP
 	class ErbConfigGenerator
