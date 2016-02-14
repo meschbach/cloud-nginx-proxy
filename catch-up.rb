@@ -16,7 +16,7 @@ class CatchUp
 			if not base_dir.directory?
 				puts "WARNING: EtcD base key #{config.etcd_prefix} is not a directory"
 			else
-				generator = CNP::ErbConfigGenerator.new( config.lb_dir, config.etcd_prefix, config.template )
+				generator = CNP::ErbConfigGenerator.new( config.lb_dir, config.etcd_prefix, config.template, config.notify_key )
 				base_dir.children.each do |child|
 					generator.generate_for_etcd( child.key )
 				end
