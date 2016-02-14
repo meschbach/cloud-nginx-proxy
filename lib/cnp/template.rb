@@ -90,7 +90,7 @@ module CNP
 			end
 		end
 
-		templateContent = File.read( templateFile || "template.erb" )
+		templateContent = File.read( templateFile || "../../template.erb" )
 
 		services = OpenStruct.new
 		services.name =  descriptor["name"] || "default-upstream"
