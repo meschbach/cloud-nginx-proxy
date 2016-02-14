@@ -56,6 +56,7 @@ module CNP
 			if @notify_key
 				client = Etcd.client
 				client.set( @notify_key, value: "Updated #{host} @" + DateTime.now.to_s )
+				puts "Notified #{@notify_key} #{host} has been updated."
 			end
 		end
 	end
