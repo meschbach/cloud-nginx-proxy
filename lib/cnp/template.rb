@@ -3,12 +3,13 @@
 #
 #
 ########################################
+#
+#
+#
+require 'json'
+require 'erb'
+
 module CNP
-	#
-	#
-	#
-	require 'json'
-	require 'erb'
 
 	#
 	#
@@ -64,7 +65,7 @@ module CNP
 	#
 	#
 	#
-	def translate( input, upstreams )
+	def self.translate( input, upstreams )
 		descriptor = JSON.parse( input )
 		translate_host( descriptor, upstreams )
 	end
@@ -72,7 +73,7 @@ module CNP
 	#
 	#
 	#
-	def translate_host( descriptor, upstreams, templateFile = nil )
+	def self.translate_host( descriptor, upstreams, templateFile = nil )
 		unless descriptor["name"]
 			raise "'name' field must be provided to configure upstreams"
 		end
