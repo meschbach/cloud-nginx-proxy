@@ -8,9 +8,10 @@ require 'cnp/template'
 
 module CNP
 	class ErbConfigGenerator
-		def initialize( output_base, etcd_prefix )
+		def initialize( output_base, etcd_prefix, template )
 			@output_base = output_base
 			@etcd_prefix = etcd_prefix
+			@template = template
 		end
 
 		def etcd_key_prefix
