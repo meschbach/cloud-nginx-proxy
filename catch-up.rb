@@ -4,8 +4,7 @@
 #
 # For each proxied host, if there is an upstr
 ########################################
-require "./generator.rb"
-require "./lib/output.rb"
+require "cnp/output"
 
 require 'etcd'
 
@@ -17,7 +16,7 @@ class CatchUp
 			if not base_dir.directory?
 				puts "WARNING: EtcD base key #{config.etcd_prefix} is not a directory"
 			else
-				generator = ErbConfigGenerator.new( config.lb_dir, config.etcd_prefix )
+				generator = CNP::ErbConfigGenerator.new( config.lb_dir, config.etcd_prefix )
 				base_dir.children.each do |child|
 					generator.generate_for_etcd( child.key )
 				end
