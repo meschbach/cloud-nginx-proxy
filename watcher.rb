@@ -1,5 +1,5 @@
 #!/bin/bash ruby
-require "./generator.rb"
+require "cnp/template"
 
 require 'etcd'
 
