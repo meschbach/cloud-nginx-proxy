@@ -3,7 +3,12 @@
 	"host" : "community.meschbach.com",
 	"https" : {
 		"key" : "private/com.meschbach.community_key",
-		"certificate" : "private/com.meschbach.community_certificate"
+		"certificate" : "private/com.meschbach.community_certificate",
+		"locations" : {
+			"/images/upload" : {
+				"request_body_limit" : "256M"
+			}
+		}
 	},
 	"http" : { "https-redirect" : true }
 }

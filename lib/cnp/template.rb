@@ -34,6 +34,7 @@ module CNP
 			descriptor.host = @descriptor["host"]
 			descriptor.certificate = https["certificate"]
 			descriptor.key = https["key"]
+			descriptor.locations = extract_locations_from_hash( @descriptor["https"] )
 			descriptor
 		end
 
@@ -45,7 +46,18 @@ module CNP
 			descriptor = OpenStruct.new
 			descriptor.host = @descriptor["host"]
 			descriptor.redirect_to_https = @descriptor["http"]["https-redirect"]
+			descriptor.locations = extract_locations_from_hash( @descriptor["http"] )
 			descriptor
+		end
+
+		def extract_locations_from_hash( config )
+			locations = (config["locations"] || {}).map do |key, value|
+				mount = OpenStruct.new
+				mount.path = key
+				mount.request_body_limit = value["request_body_limit"] if value["request_body_limit"]
+				mount
+			end
+			locations
 		end
 
 		def upstreams

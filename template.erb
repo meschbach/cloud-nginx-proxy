@@ -15,6 +15,12 @@ server {
 		proxy_pass http://<%= upstreams.name %>;
 		include proxy_params;
 	}
+
+	<% https.locations.each do |uri| %>
+		location <%= uri.path %> {
+			<% if uri.request_body_limit %> client_max_body_size <%= uri.request_body_limit %>; <% end %>
+		}
+	<% end %>
 }
 <% end %>
 
@@ -30,6 +36,12 @@ server {
 			proxy_pass http://<%= upstreams.name %>;
 			include proxy_params;
 		}
+
+		<% http.locations.each do |uri| %>
+			location <%= uri.path %> {
+				<% if uri.request_body_limit %> client_max_body_size <%= uri.request_body_limit %>; <% end %>
+			}
+		<% end %>
 	<% end %>
 }
 <% end %>
