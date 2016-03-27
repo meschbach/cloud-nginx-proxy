@@ -88,7 +88,7 @@ class EtcdExecWatcherBridge
 		host = EtcdHostConfig.new( host_root )
 		config = host.config
 		upstreams = host.upstreams
-		result = translate_host( config, upstreams, @template )
+		result = CNP.translate_host( config, upstreams, @template )
 
 		target_file = @lb_dir + "/" + host.config["name"]
 		puts "Writing to #{target_file}"
