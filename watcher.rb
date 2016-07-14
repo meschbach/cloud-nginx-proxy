@@ -92,6 +92,7 @@ class EtcdExecWatcherBridge
 
 		target_file = @lb_dir + "/" + host.config["name"]
 		puts "Writing to #{target_file}"
+		puts result
 		File.write( target_file, result )
 
 		if @notify_key
