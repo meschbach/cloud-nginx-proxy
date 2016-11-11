@@ -26,8 +26,8 @@ server {
 
 <% if http %>
 server {
-	listen	*:80;
-	server_name	<%= http.host %>;
+	listen *:80;
+	server_name <%= http.host %>;
 
 	<% if http.redirect_to_https %>
 		return 301 https://$server_name$request_uri;
