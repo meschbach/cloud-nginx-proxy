@@ -16,6 +16,7 @@ class Spinach::Features::ReverseProxyingHttp < Spinach::FeatureSteps
   end
 
   step 'the HTTP nginx configuration is correctly generated' do
+		@host_config.should include( "listen *:80;" )
 		@host_config.should include( "server_name #{@host_name};" )
   end
 end
