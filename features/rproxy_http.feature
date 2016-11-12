@@ -6,5 +6,6 @@ Feature: Reverse Proxying HTTP
 	Scenario: Deploys to the correct hostname and port
 		Given I have an HTTP site configured
 		When the configuration is activated
-		Then the HTTP nginx configuration is correctly generated
-
+		Then the hostname and port are correct
+		And the upstreams are generated
+		And all traffic is passed to the backends
