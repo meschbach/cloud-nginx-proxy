@@ -10,7 +10,6 @@ require 'json'
 require 'erb'
 
 module CNP
-
 	#
 	#
 	#
@@ -30,12 +29,12 @@ module CNP
 			end
 			https = @descriptor["https"]
 
-			descriptor = OpenStruct.new
-			descriptor.host = @descriptor["host"]
-			descriptor.certificate = https["certificate"]
-			descriptor.key = https["key"]
-			descriptor.locations = extract_locations_from_hash( @descriptor["https"] )
-			descriptor
+			descriptor = OpenStruct.new({
+				:host => @descriptor["host"],
+				:certificate => https["certificate"],
+				:key => https["key"],
+				:locations => extract_locations_from_hash( @descriptor["https"] )
+			})
 		end
 
 		def http
@@ -102,10 +101,17 @@ module CNP
 			end
 		end
 
-		templateContent = File.read( templateFile || "../../template.erb" )
+		if templateFile.nil?
+			cnp_dir = File.dirname( __FILE__ )
+			lib_dir = File.dirname( cnp_dir )
+			base_dir = File.dirname( lib_dir )
+			templateFile = File.join( base_dir, "template.erb" )
+		end
+		templateContent = File.read( templateFile )
 
 		services = OpenStruct.new
 		services.name =  descriptor["name"] || "default-upstream"
+		#TODO: This should be a logged statement
 		puts "Upstream name: #{services.name}"
 		services.services = upstreams
 
