@@ -3,7 +3,7 @@ gem 'etcd'
 gem 'trollop'
 
 group :test do
-	gem 'spinach'
+	gem 'cumber'
 	gem 'rspec'
 	gem 'json'
 end
