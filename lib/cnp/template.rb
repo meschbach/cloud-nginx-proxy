@@ -29,11 +29,12 @@ module CNP
 			end
 			https = @descriptor["https"]
 
-			descriptor = OpenStruct.new
-			descriptor.host = @descriptor["host"]
-			descriptor.certificate = https["certificate"]
-			descriptor.key = https["key"]
-			descriptor.locations = extract_locations_from_hash( @descriptor["https"] )
+			descriptor = OpenStruct.new({
+				:host => @descriptor["host"],
+				:certificate => https["certificate"],
+				:key => https["key"],
+				:locations => extract_locations_from_hash( @descriptor["https"] )
+			})
 		end
 
 		def http
