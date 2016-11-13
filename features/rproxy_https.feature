@@ -11,3 +11,11 @@ Feature: Reverse Proxying HTTPS
 		And not listening on port 80
 		And the upstreams are generated
 		And all traffic is passed to the backends
+
+	Scenario: Deploys a given upload limit override
+		Given I have an HTTPS site configured
+		And allows 256M to be uploaded to '/example-upload'
+		When the configuration is activated
+		Then the location '/example-upload' passes the proxy
+		And the location '/example-upload' allows for 256M
+		And the location '/example-upload' imports the proxy configuration

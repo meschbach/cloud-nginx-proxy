@@ -18,6 +18,8 @@ server {
 
 	<% https.locations.each do |uri| %>
 		location <%= uri.path %> {
+			proxy_pass http://<%= upstreams.name %>;
+			include proxy_params;
 			<% if uri.request_body_limit %> client_max_body_size <%= uri.request_body_limit %>; <% end %>
 		}
 	<% end %>

@@ -13,3 +13,28 @@ Given 'I have an HTTPS site configured' do
 		}
 	})
 end
+
+Given(/^allows (\d+)M to be uploaded to '\/example\-upload'$/) do |size|
+	@upload_point = {
+		"/example-upload" => {
+			"request_body_limit" => "256M"
+		}
+	}
+
+	@descriptor["https"]["locations"] = @upload_point
+end
+
+Then(/^the location '\/example\-upload' passes the proxy$/) do
+	# TODO: need to improve how the tests understand the configuration
+	@host_config.should match /location\s\/example\-upload\s{(\s*)proxy_pass\shttp\:\/\/https_upstreams;/
+end
+
+Then(/^the location '\/example\-upload' allows for (\d+)M$/) do |size|
+	result = /location\s\/example\-upload\s\{([^\}])*\}/.match( @host_config )
+	result[0].should match /client_max_body_size\s#{size}M;/
+end
+
+Then(/^the location '\/example\-upload' imports the proxy configuration$/) do
+	result = /location\s\/example\-upload\s\{([^\}])*\}/.match( @host_config )
+	result[0].should match /include(\s+)proxy_params/
+end
