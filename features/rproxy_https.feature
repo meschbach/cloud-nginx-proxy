@@ -19,3 +19,9 @@ Feature: Reverse Proxying HTTPS
 		Then the location '/example-upload' passes the proxy
 		And the location '/example-upload' allows for 256M
 		And the location '/example-upload' imports the proxy configuration
+
+	Scenario: App server redirects HTTP traffic
+		Given I have an HTTPS site configured
+		And the HTTPS site is configured to redirect HTTP traffic
+		When the configuration is activated
+		Then HTTP traffic is redirected

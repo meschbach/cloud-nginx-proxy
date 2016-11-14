@@ -38,3 +38,15 @@ Then(/^the location '\/example\-upload' imports the proxy configuration$/) do
 	result = /location\s\/example\-upload\s\{([^\}])*\}/.match( @host_config )
 	result[0].should match /include(\s+)proxy_params/
 end
+
+Given(/^the HTTPS site is configured to redirect HTTP traffic$/) do
+	http = {} || @descriptor["http"]
+	http["https-redirect"] = true
+	@descriptor["http"] = http
+end
+
+Then(/^HTTP traffic is redirected$/) do
+	#puts "#{@host_config}"
+	servers = @host_config.scan(/server\s+\{[^\}]*\}/)
+	servers[1].should include "return 301 https://$server_name$request_uri;"
+end
