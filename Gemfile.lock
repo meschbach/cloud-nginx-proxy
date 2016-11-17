@@ -21,30 +21,30 @@ GEM
     mixlib-log (1.6.0)
     multi_json (1.12.1)
     multi_test (0.1.2)
-    rspec (3.4.0)
-      rspec-core (~> 3.4.0)
-      rspec-expectations (~> 3.4.0)
-      rspec-mocks (~> 3.4.0)
-    rspec-core (3.4.2)
-      rspec-support (~> 3.4.0)
-    rspec-expectations (3.4.0)
+    rspec (3.5.0)
+      rspec-core (~> 3.5.0)
+      rspec-expectations (~> 3.5.0)
+      rspec-mocks (~> 3.5.0)
+    rspec-core (3.5.4)
+      rspec-support (~> 3.5.0)
+    rspec-expectations (3.5.0)
       diff-lcs (>= 1.2.0, < 2.0)
-      rspec-support (~> 3.4.0)
-    rspec-mocks (3.4.1)
+      rspec-support (~> 3.5.0)
+    rspec-mocks (3.5.0)
       diff-lcs (>= 1.2.0, < 2.0)
-      rspec-support (~> 3.4.0)
-    rspec-support (3.4.1)
+      rspec-support (~> 3.5.0)
+    rspec-support (3.5.0)
     trollop (2.1.2)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
-  cucumber
-  etcd
-  json
-  rspec
-  trollop
+  cucumber (= 2.4.0)
+  etcd (= 0.3.0)
+  json (= 2.0.2)
+  rspec (= 3.5.0)
+  trollop (= 2.1.2)
 
 BUNDLED WITH
    1.11.2
