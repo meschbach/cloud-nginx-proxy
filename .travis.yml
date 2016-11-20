@@ -3,4 +3,5 @@ rvm:
   - 2.2.3
   - 2.3.0
   - 2.3.1
+before_install: .travis/before_install
 script: bundle exec cucumber
