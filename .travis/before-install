@@ -4,7 +4,10 @@
 version=v2.3.7
 echo "Installing ETCD $version"
 
-curl https://github.com/coreos/etcd/releases/download/$version/etcd-$version-linux-amd64.tar.gz -o etcd.tgz
+url="https://github.com/coreos/etcd/releases/download/$version/etcd-$version-linux-amd64.tar.gz"
+echo $url
+curl -L "$url" -o etcd.tgz
 tar zxvf etcd.tgz
-ls etcd
+etcd_home="$PWD/etcd-$version-linux-amd64"
+nohup $etcd_home/etcd &
 )
