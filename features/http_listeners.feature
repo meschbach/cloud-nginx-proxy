@@ -14,3 +14,12 @@ Feature: HTTP Connector Management
 		When the configuration is activated
 		Then listening on port 8080
 		And not listening on port 80
+
+	Scenario: Allows for multiple ports to specified for a descriptor
+		Given I have an HTTP site configured
+		And the HTTP site is configured to listen on port 9292
+		And the HTTP site is configured to listen on port 9293
+		When the configuration is activated
+		Then listening on port 9292
+		And listening on port 9293
+		And not listening on port 80
