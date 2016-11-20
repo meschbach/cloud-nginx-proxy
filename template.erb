@@ -28,7 +28,9 @@ server {
 
 <% if http %>
 server {
-	listen *:80;
+	<% http.connector.ports.each do |port| %>
+		listen *:<%= port %> ;
+	<% end %>
 	server_name <%= http.host %>;
 
 	<% if http.redirect_to_https %>

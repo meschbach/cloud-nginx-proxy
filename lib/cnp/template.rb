@@ -42,10 +42,20 @@ module CNP
 				return false
 			end
 
+			http_descriptor = @descriptor["http"]
+			connector_description = http_descriptor["connector"] || {}
+			if connector_description["ports"]
+				ports = connector_description["ports"] || []
+			else
+				port = connector_description["port"] || 80
+				ports = [port]
+			end
+
 			descriptor = OpenStruct.new
 			descriptor.host = @descriptor["host"]
 			descriptor.redirect_to_https = @descriptor["http"]["https-redirect"]
 			descriptor.locations = extract_locations_from_hash( @descriptor["http"] )
+			descriptor.connector = OpenStruct.new( :ports => ports )
 			descriptor
 		end
 
