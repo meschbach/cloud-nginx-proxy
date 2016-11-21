@@ -15,5 +15,5 @@ When(/^I register a simple host configuration with EtcD$/) do
 end
 
 Then(/^the host is visible to the application with EtcD$/) do
-	@etcd_layer.hosts.should include("simple.invalid")
+	@etcd_layer.host_names.should include("simple.invalid")
 end

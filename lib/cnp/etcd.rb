@@ -52,7 +52,7 @@ module CNP
 				etcdctl.set( node_path, value: json )
 			end
 
-			def hosts
+			def host_names
 				etcdctl = Etcd.client
 				prefix_node = etcdctl.get( @storage_prefix ).node
 				raise "Node #{storage_prefix} is not a directory" unless prefix_node.directory?
