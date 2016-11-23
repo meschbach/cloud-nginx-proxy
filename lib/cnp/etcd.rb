@@ -66,5 +66,41 @@ module CNP
 				end
 			end
 		end
+
+		class V2
+			def initialize( storage_prefix )
+				storage_prefix += "/" unless storage_prefix.end_with? "/"
+				@storage_prefix = storage_prefix
+			end
+
+			def register_host( host, upstream )
+				host_config_path = @storage_prefix + "hosts/" + host
+				upstreams_path = host_config_path + "/upstream"
+
+				etcdctl = Etcd.client
+				etcdctl.set( upstreams_path, value: upstream )
+			end
+
+			def register_upstream( upstream, name, url )
+				upstream_config_path = @storage_prefix + "upstreams" + "/" +upstream + "/" + name
+
+				etcdctl = Etcd.client
+				etcdctl.set( upstream_config_path, value: url )
+			end
+
+			def host_names
+				etcdctl = Etcd.client
+				prefix_node = etcdctl.get( @storage_prefix + "hosts" ).node
+				raise "Node #{storage_prefix} is not a directory" unless prefix_node.directory?
+
+				prefix_node.children.map do |host_nodes|
+					fully_qualified_name = host_nodes.key
+					split_name = fully_qualified_name.split( "/" )
+					host_name = split_name[-1]
+					puts host_name
+					host_name
+				end
+			end
+		end
 	end
 end
