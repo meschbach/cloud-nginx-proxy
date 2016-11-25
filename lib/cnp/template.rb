@@ -15,11 +15,9 @@ module CNP
 	#
 	class TemplateEval
 		def initialize( descriptor, upstream )
-			if upstream && upstream.services && !upstream.services.empty?
-				@upstreams = upstream
-			else
-				raise "upstreams must be defined."
-			end
+			raise "Upstream may not be nil" if upstream.nil?
+			raise "Expected upstream descriptor to have services" if upstream.services.nil? or upstream.services.empty?
+			@upstreams = upstream
 			@descriptor = descriptor
 		end
 
@@ -95,12 +93,9 @@ module CNP
 	#
 	#
 	def self.translate_host( descriptor, upstreams, templateFile = nil )
-		unless descriptor["name"]
-			raise "'name' field must be provided to configure upstreams"
-		end
-		unless descriptor["host"]
-			raise "'host' field must be provied"
-		end
+		raise "descriptor.'name' field must be provided to configure upstreams" unless descriptor["name"]
+		raise "'host' field must be provied" unless descriptor["host"]
+
 		if descriptor["https"]
 			https = descriptor["https"]
 			unless https["key"]

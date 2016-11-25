@@ -1,4 +1,5 @@
 require 'cnp/etcd'
+require 'cnp'
 
 Given(/^I have configured EtcD\-V2 for root \/test\/v2$/) do
 	@etcdv2 = CNP::EtcD::V2.new( "/test/v2" )
@@ -15,3 +16,36 @@ Then(/^the configuration should activate with the default connectors$/) do
 	host = @etcdv2.host( @host_name )
 	host.connectors.should include( "default" )
 end
+
+Given(/^I have a register EtcD\-V(\d+) storage in the system$/) do |arg1|
+	@system = CNP::System.new
+	@system.register_storage( CNP::EtcD::V2.new( '/test/v2' ) )
+end
+
+When(/^reigster the host with connector '([^']+)' and upstream '([^']+)'$/) do |connector, upstream|
+	host = @system.register_host( @host_name, upstream )
+	host.use_connector( connector )
+end
+
+Given(/^the host name is '([^']*)'$/) do |host_name|
+	@host_name = host_name
+end
+
+Given(/^the upstream is '([^']*)'$/) do |upstream|
+	@upstream = upstream
+end
+
+When(/^I register the EtcD\-V2 connector '([^']*)' for HTTP with ports (\d+) and (\d+)$/) do |name, port1, port2|
+	@connector_builder = @system.register_connector( name )
+	@connector_builder.register_port( 'private', port1 )
+	@connector_builder.register_port( 'public', port2 )
+end
+
+When(/^ask the system to generate the configuration for the site$/) do
+	@host_config = @system.generate_for( @host_name )
+end
+
+When(/^register the upstream '([^']+)' with '([^']+)' named '([^']+)'$/) do |upstream, url, name|
+	@system.register_upstream( upstream, name, url )
+end
+

@@ -79,6 +79,7 @@ module CNP
 
 				etcdctl = etcd_client
 				etcdctl.set( upstreams_path, value: upstream )
+				V2_Host.new( host_config_path, host, etcdctl )
 			end
 
 			def register_upstream( upstream, name, url )
@@ -86,6 +87,17 @@ module CNP
 
 				etcdctl = etcd_client
 				etcdctl.set( upstream_config_path, value: url )
+			end
+
+			def register_connector( name )
+				connector_path = @storage_prefix + "connectors/"
+				key_name = connector_path + name
+				if etcd_client.exists?( key_name )
+					raise "Expected directory got other for #{key_name}" unless etcd_client.get( key_name ).directory?
+				else
+					etcd_client.create( key_name, dir: true )
+				end
+				V2_Connector.new( key_name, etcd_client )
 			end
 
 			def host_names
@@ -104,7 +116,17 @@ module CNP
 			def host( name )
 				etcdctl = etcd_client
 				host_key_base = @storage_prefix + "hosts/" + name
-				V2_Host.new( host_key_base, etcdctl )
+				V2_Host.new( host_key_base, name, etcdctl )
+			end
+
+			def upstream( name )
+				upstream_base = @storage_prefix + "upstreams/" + name
+				V2_Upstream.new( upstream_base, name, etcd_client )
+			end
+
+			def connector( name )
+				key = @storage_prefix + "connectors/" + name
+				V2_Connector.new( key, etcd_client )
 			end
 
 			private
@@ -114,19 +136,73 @@ module CNP
 		end
 
 		class V2_Host
-			def initialize( host_base, etcdctl )
+			def initialize( host_base, host_name, etcdctl )
 				@host_base = host_base
+				@host_name = host_name
 				@etcdctl = etcdctl
+			end
+
+			def host_name; @host_name; end
+
+			def use_connector( name )
+				@etcdctl.set( @host_base + "/connectors", value: name )
+				self
 			end
 
 			def connectors
 				connectors = @host_base + "/connectors"
 				if @etcdctl.exists? connectors
 					connector_names = @etcdctl.get( connectors )
-					JSON.parse( connector_names )
+					[connector_names.value]
 				else
 					["default"]
 				end
+			end
+
+			def upstream
+				upstream_key = @host_base + "/upstream"
+				if @etcdctl.exists?( upstream_key )
+					@etcdctl.get( upstream_key ).value
+				else
+					"default"
+				end
+			end
+		end
+
+		class V2_Connector
+			def initialize( key_base, etcdctl )
+				@base = key_base
+				@etcdctl = etcdctl
+			end
+
+			def register_port( name, port )
+				key = @base + "/" + name
+				@etcdctl.set( key, value: port )
+			end
+
+			def type; "http"; end
+			def listeners
+				node = @etcdctl.get( @base )
+				node.children.map do |connector_node|
+					connector_node.value
+				end
+			end
+		end
+
+		class V2_Upstream
+			def initialize( key, name, etcdctl )
+				@base = key
+				@name = name
+				@etcd_client = etcdctl
+			end
+
+			def output_details
+				node = @etcd_client.get( @base )
+				raise "Expected upstream '#{@base}' to be a directory" unless node.directory?
+				upstreams = node.children.map do |child|
+					child.value
+				end.reject { |upstream| upstream.nil? }
+				return upstreams
 			end
 		end
 	end

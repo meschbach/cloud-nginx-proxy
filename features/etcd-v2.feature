@@ -7,3 +7,15 @@ Feature: ETCD v2 Coordination Layer
 		Given I have configured EtcD-V2 for root /test/v2
 		When I register a simple site and upstream using EtcD-V2
 		Then the configuration should activate with the default connectors
+
+	Scenario: I would like to use additional connectors
+		Given I have a register EtcD-V2 storage in the system
+		And the host name is 'connectors.v2.etcd.cnp.invalid'
+		And the upstream is 'connector-test'
+		When I register the EtcD-V2 connector 'public' for HTTP with ports 80 and 8080
+		And register the upstream 'connector-test' with 'http://localhost:9292' named 'port9292'
+		And reigster the host with connector 'public' and upstream 'connector-test'
+		And ask the system to generate the configuration for the site
+		Then the host name is correct
+		And listening on port 80
+		And listening on port 8080
