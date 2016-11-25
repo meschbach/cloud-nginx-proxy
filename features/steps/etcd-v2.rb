@@ -12,4 +12,6 @@ end
 
 Then(/^the configuration should activate with the default connectors$/) do
 	@etcdv2.host_names.should include( @host_name )
+	host = @etcdv2.host( @host_name )
+	host.connectors.should include( "default" )
 end

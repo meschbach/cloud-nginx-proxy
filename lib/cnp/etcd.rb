@@ -77,19 +77,19 @@ module CNP
 				host_config_path = @storage_prefix + "hosts/" + host
 				upstreams_path = host_config_path + "/upstream"
 
-				etcdctl = Etcd.client
+				etcdctl = etcd_client
 				etcdctl.set( upstreams_path, value: upstream )
 			end
 
 			def register_upstream( upstream, name, url )
 				upstream_config_path = @storage_prefix + "upstreams" + "/" +upstream + "/" + name
 
-				etcdctl = Etcd.client
+				etcdctl = etcd_client
 				etcdctl.set( upstream_config_path, value: url )
 			end
 
 			def host_names
-				etcdctl = Etcd.client
+				etcdctl = etcd_client
 				prefix_node = etcdctl.get( @storage_prefix + "hosts" ).node
 				raise "Node #{storage_prefix} is not a directory" unless prefix_node.directory?
 
@@ -97,8 +97,35 @@ module CNP
 					fully_qualified_name = host_nodes.key
 					split_name = fully_qualified_name.split( "/" )
 					host_name = split_name[-1]
-					puts host_name
 					host_name
+				end
+			end
+
+			def host( name )
+				etcdctl = etcd_client
+				host_key_base = @storage_prefix + "hosts/" + name
+				V2_Host.new( host_key_base, etcdctl )
+			end
+
+			private
+			def etcd_client
+				etcdctl = Etcd.client
+			end
+		end
+
+		class V2_Host
+			def initialize( host_base, etcdctl )
+				@host_base = host_base
+				@etcdctl = etcdctl
+			end
+
+			def connectors
+				connectors = @host_base + "/connectors"
+				if @etcdctl.exists? connectors
+					connector_names = @etcdctl.get( connectors )
+					JSON.parse( connector_names )
+				else
+					["default"]
 				end
 			end
 		end
