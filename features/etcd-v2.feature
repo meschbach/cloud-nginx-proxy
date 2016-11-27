@@ -19,3 +19,11 @@ Feature: ETCD v2 Coordination Layer
 		Then the host name is correct
 		And listening on port 80
 		And listening on port 8080
+
+	Scenario: I would like to host an HTTP site
+		Given I have a register EtcD-V2 storage in the system
+		When I register a connector 'test-https' for TLS on port 443
+		And upstream 'test-https' for upstream 'localhost:9999'
+		And I register host 'https.etcd2.cnp.invalid' to use connector 'test-https' and upstream 'test-https'
+		And ask the system to generate the configuration for the site
+		Then listening on port 443

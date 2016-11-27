@@ -89,13 +89,14 @@ module CNP
 				etcdctl.set( upstream_config_path, value: url )
 			end
 
-			def register_connector( name )
+			def register_connector( name, type )
 				connector_path = @storage_prefix + "connectors/"
 				key_name = connector_path + name
 				if etcd_client.exists?( key_name )
 					raise "Expected directory got other for #{key_name}" unless etcd_client.get( key_name ).directory?
+					etcd_client.set( key_name + "/config/type", value: type )
 				else
-					etcd_client.create( key_name, dir: true )
+					etcd_client.set( key_name + "/config/type", value: type )
 				end
 				V2_Connector.new( key_name, etcd_client )
 			end
@@ -176,13 +177,17 @@ module CNP
 			end
 
 			def register_port( name, port )
-				key = @base + "/" + name
+				key = @base + "/ports/" + name
 				@etcdctl.set( key, value: port )
 			end
 
-			def type; "http"; end
+			def type
+				node = @etcdctl.get( @base +"/config/type" )
+				node.value
+			end
+
 			def listeners
-				node = @etcdctl.get( @base )
+				node = @etcdctl.get( @base +"/ports" )
 				node.children.map do |connector_node|
 					connector_node.value
 				end

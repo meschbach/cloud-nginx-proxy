@@ -14,9 +14,9 @@ module CNP
 			@storage.register_host( host_name, upstream_name )
 		end
 
-		def register_connector( name )
+		def register_connector( name, type = 'http' )
 			raise "storage layer needs to be registered" if @storage.nil?
-			@storage.register_connector( name )
+			@storage.register_connector( name, type )
 		end
 
 		def register_upstream( upstream, name, url )
@@ -35,11 +35,19 @@ module CNP
 			}
 
 			http_ports = []
+			https_ports = []
 			host.connectors.each do |connector_name|
 				connector =  @storage.connector( connector_name )
-				raise "Expected type HTTP, got '#{connector.type}'" unless connector.type == "http"
-				connector.listeners.each do |p|
-					http_ports.push( p )
+				if connector.type == "http"
+					connector.listeners.each do |p|
+						http_ports.push( p )
+					end
+				elsif connector.type == "tls"
+					connector.listeners.each do |p|
+						https_ports.push( p )
+					end
+				else
+					raise "Expected type (http|tls), got '#{connector.type}'"
 				end
 			end
 
@@ -48,6 +56,13 @@ module CNP
 					"connector" => {
 						"ports" => http_ports
 					}
+				}
+			end
+
+			unless https_ports.empty?
+				host_config["https"] = {
+					"certificate" => "/private/certificate",
+					"key" => "/private/key"
 				}
 			end
 			CNP::translate_host( host_config, upstream.output_details )

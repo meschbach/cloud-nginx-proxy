@@ -41,8 +41,23 @@ When(/^I register the EtcD\-V2 connector '([^']*)' for HTTP with ports (\d+) and
 	@connector_builder.register_port( 'public', port2 )
 end
 
+When(/^I register a connector '([^']+)' for TLS on port (\d+)$/) do |name, port|
+	@connector_builder = @system.register_connector( name, 'tls' )
+	@connector_builder.register_port( "default", port )
+end
+
+When(/^upstream '([^']+)' for upstream '([^']+)'$/) do |upstream, url|
+	@system.register_upstream( upstream, "default", url )
+end
+
 When(/^ask the system to generate the configuration for the site$/) do
 	@host_config = @system.generate_for( @host_name )
+end
+
+When(/^I register host '([^']+)' to use connector '([^']+)' and upstream '([^']+)'$/) do |host, connector, upstream|
+	@host_name = host
+	host = @system.register_host( host, upstream )
+	host.use_connector( connector )
 end
 
 When(/^register the upstream '([^']+)' with '([^']+)' named '([^']+)'$/) do |upstream, url, name|
