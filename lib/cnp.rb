@@ -11,7 +11,13 @@ module CNP
 
 		def register_host( host_name, upstream_name = nil )
 			raise "storage layer needs to be registered" if @storage.nil?
-			@storage.register_host( host_name, upstream_name )
+			if @storage.host_names.include? host_name
+				host = @storage.host( host_name )
+				host.use_upstream( upstream_name ) if upstream_name
+				host
+			else
+				@storage.register_host( host_name, upstream_name )
+			end
 		end
 
 		def register_connector( name, type = 'http' )
@@ -61,11 +67,12 @@ module CNP
 
 			unless https_ports.empty?
 				host_config["https"] = {
-					"certificate" => "/private/certificate",
-					"key" => "/private/key"
+					"certificate" => host.asymmetric_certificate,
+					"key" => host.asymmetric_key
 				}
 			end
-			CNP::translate_host( host_config, upstream.output_details )
+			upstream_details = upstream.output_details
+			CNP::translate_host( host_config, upstream_details )
 		end
 	end
 end

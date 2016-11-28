@@ -75,11 +75,11 @@ module CNP
 
 			def register_host( host, upstream )
 				host_config_path = @storage_prefix + "hosts/" + host
-				upstreams_path = host_config_path + "/upstream"
 
 				etcdctl = etcd_client
-				etcdctl.set( upstreams_path, value: upstream )
-				V2_Host.new( host_config_path, host, etcdctl )
+				host = V2_Host.new( host_config_path, host, etcdctl )
+				host.use_upstream( upstream )
+				host
 			end
 
 			def register_upstream( upstream, name, url )
@@ -121,6 +121,7 @@ module CNP
 			end
 
 			def upstream( name )
+				raise "Expected upstream named, got empty or nil" if (name.nil? or name.empty?)
 				upstream_base = @storage_prefix + "upstreams/" + name
 				V2_Upstream.new( upstream_base, name, etcd_client )
 			end
@@ -161,13 +162,38 @@ module CNP
 			end
 
 			def upstream
-				upstream_key = @host_base + "/upstream"
 				if @etcdctl.exists?( upstream_key )
-					@etcdctl.get( upstream_key ).value
+					node = @etcdctl.get( upstream_key )
+					value = node.value
+					raise "Storage error: upstream is nil but exists" if (value.nil? or value.empty?)
+					value
 				else
 					"default"
 				end
 			end
+
+			def use_upstream( upstream_name )
+				raise "Storage constraint: upstream my be a valid name" if (upstream_name.nil? or upstream.empty?)
+				@etcdctl.set( upstream_key, value: upstream_name )
+			end
+
+			def use_asymmetric_key( certificate, key )
+				@etcdctl.set( certificate_key, value: certificate )
+				@etcdctl.set( private_key, value: key )
+			end
+
+			def asymmetric_certificate
+				@etcdctl.get( certificate_key ).value
+			end
+
+			def asymmetric_key
+				@etcdctl.get( private_key ).value
+			end
+
+			private
+			def upstream_key; @host_base + "/upstream"; end
+			def certificate_key; @host_base + "/certificate"; end
+			def private_key; @host_base + "/key"; end
 		end
 
 		class V2_Connector
@@ -196,14 +222,15 @@ module CNP
 
 		class V2_Upstream
 			def initialize( key, name, etcdctl )
-				@base = key
+				raise "key must be a valid value" if key.nil? or key.empty?
+				@key = key
 				@name = name
 				@etcd_client = etcdctl
 			end
 
 			def output_details
-				node = @etcd_client.get( @base )
-				raise "Expected upstream '#{@base}' to be a directory" unless node.directory?
+				node = @etcd_client.get( @key )
+				raise "Expected upstream '#{@key}' to be a directory" unless node.directory?
 				upstreams = node.children.map do |child|
 					child.value
 				end.reject { |upstream| upstream.nil? }

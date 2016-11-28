@@ -1,5 +1,6 @@
 require 'cnp/etcd'
 require 'cnp'
+require 'mee/nginx/parser'
 
 Given(/^I have configured EtcD\-V2 for root \/test\/v2$/) do
 	@etcdv2 = CNP::EtcD::V2.new( "/test/v2" )
@@ -52,6 +53,7 @@ end
 
 When(/^ask the system to generate the configuration for the site$/) do
 	@host_config = @system.generate_for( @host_name )
+	@conf = MEE::Nginx::Parser.parse( @host_config )
 end
 
 When(/^I register host '([^']+)' to use connector '([^']+)' and upstream '([^']+)'$/) do |host, connector, upstream|
@@ -64,3 +66,14 @@ When(/^register the upstream '([^']+)' with '([^']+)' named '([^']+)'$/) do |ups
 	@system.register_upstream( upstream, name, url )
 end
 
+When(/^I register host '([^']+)' to use certificate '([^']+)' and key '([^']+)'$/) do |host, certificate, key|
+	@system.register_host( host ).use_asymmetric_key( certificate, key )
+end
+
+Then(/^is using the certificate '([^']+)'$/) do |certificate|
+	@conf.path_exists?( ["server", "ssl_certificate #{certificate}"] ).should be true
+end
+
+Then(/^is using the key '([^']+)'$/) do |key|
+	@conf.path_exists?( ["server", "ssl_certificate_key #{key}"] ).should be true
+end
