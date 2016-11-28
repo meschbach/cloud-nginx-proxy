@@ -3,7 +3,7 @@ require 'cnp'
 require 'mee/nginx/parser'
 
 Given(/^I have configured EtcD\-V2 for root \/test\/v2$/) do
-	@etcdv2 = CNP::EtcD::V2.new( "/test/v2" )
+	@etcdv2 = CNP::EtcD::V2::Storage.new( "/test/v2" )
 end
 
 When(/^I register a simple site and upstream using EtcD\-V2$/) do
@@ -20,7 +20,7 @@ end
 
 Given(/^I have a register EtcD\-V(\d+) storage in the system$/) do |arg1|
 	@system = CNP::System.new
-	@system.register_storage( CNP::EtcD::V2.new( '/test/v2' ) )
+	@system.register_storage( CNP::EtcD::V2::Storage.new( '/test/v2' ) )
 end
 
 When(/^reigster the host with connector '([^']+)' and upstream '([^']+)'$/) do |connector, upstream|
