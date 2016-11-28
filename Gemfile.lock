@@ -1,3 +1,10 @@
+GIT
+  remote: https://github.com/meschbach/mee-nginx-parser.git
+  revision: c53322b796602312918f3589dab678fef59028aa
+  tag: v0.1.1
+  specs:
+    mee-nginx-parser (0.1.1)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -43,6 +50,7 @@ DEPENDENCIES
   cucumber (= 2.4.0)
   etcd (= 0.3.0)
   json (= 2.0.2)
+  mee-nginx-parser (= 0.1.1)!
   rspec (= 3.5.0)
   trollop (= 2.1.2)
 

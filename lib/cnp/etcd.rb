@@ -4,6 +4,7 @@
 # EtcD bindings
 ########################################
 require 'etcd'
+require 'cnp/etcd/v2'
 
 module CNP
 	class EtcdHostConfig
