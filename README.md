@@ -2,7 +2,11 @@
 
 # Cloud NGINX Proxy
 
-A system which watches an ETCD instance to produce an NGINX configuration.
+An application designed to handle automatic _Nginx_ configuration updates, including reverse proxying.
+
+## How it works
+
+This application listens for changes in a specific subtree of your `etcd` instance.  When a change occurs, this application generates a configuration based on the set of `etcd` keys.  Once the configuration has been generated it then writes to an `etcd` key to restart Nginx.
 
 ## Installation and usage
 In the future I hope to make this section more digestable.
