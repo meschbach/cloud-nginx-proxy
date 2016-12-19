@@ -4,8 +4,18 @@
 #
 # For each proxied host, if there is an upstr
 ########################################
-require "cnp/output"
 
+#
+# Configuring File path
+#
+base =  File.dirname( __FILE__ )
+$LOAD_PATH.unshift( base )
+$LOAD_PATH.unshift( File.join( File.dirname( __FILE__ ), 'lib' ) )
+
+#
+# Find the file
+#
+require "cnp/output"
 require 'etcd'
 
 class CatchUp
