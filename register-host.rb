@@ -4,7 +4,11 @@ require 'rubygems'
 require 'bundler/setup'
 require 'json'
 
-require File.join( File.dirname( __FILE__ ), 'lib', 'cnp', 'etcd' )
+base =  File.dirname( __FILE__ )
+$LOAD_PATH.unshift( base )
+$LOAD_PATH.unshift( File.join( File.dirname( __FILE__ ), 'lib' ) )
+
+require 'cnp/etcd'
 
 #
 # CLI
