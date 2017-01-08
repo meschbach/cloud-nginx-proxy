@@ -9,8 +9,13 @@ module CNP
 			@storage = storage
 		end
 
+		def host_names
+			@storage.host_names
+		end
+
 		def register_host( host_name, upstream_name = nil )
 			raise "storage layer needs to be registered" if @storage.nil?
+			raise "host name can't be nil" if host_name.nil? or host_name.empty?
 			if @storage.host_names.include? host_name
 				host = @storage.host( host_name )
 				host.use_upstream( upstream_name ) if upstream_name
@@ -61,7 +66,8 @@ module CNP
 				host_config["http"] = {
 					"connector" => {
 						"ports" => http_ports
-					}
+					},
+					"https-redirect" => host.redirect_to_https
 				}
 			end
 
@@ -70,7 +76,16 @@ module CNP
 					"certificate" => host.asymmetric_certificate,
 					"key" => host.asymmetric_key
 				}
+
+				locations = host.locations.reduce({}) do |overrides, location|
+					opts = {}
+					opts["request_body_limit"] = location.request_body_size
+					overrides[ location.path ] = opts
+					overrides
+				end
+				host_config["https"]["locations"] = locations
 			end
+
 			upstream_details = upstream.output_details
 			CNP::translate_host( host_config, upstream_details )
 		end

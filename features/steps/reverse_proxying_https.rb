@@ -34,6 +34,11 @@ Then(/^the location '\/example\-upload' allows for (\d+)M$/) do |size|
 	result[0].should match /client_max_body_size\s#{size}M;/
 end
 
+Then(/^the location '\/images\/upload' allows for (\d+)M$/) do |size|
+	result = /location\s\/images\/upload\s\{([^\}])*\}/.match( @host_config )
+	result[0].should match /client_max_body_size\s\"#{size}M\";/
+end
+
 Then(/^the location '\/example\-upload' imports the proxy configuration$/) do
 	result = /location\s\/example\-upload\s\{([^\}])*\}/.match( @host_config )
 	result[0].should match /include(\s+)proxy_params/

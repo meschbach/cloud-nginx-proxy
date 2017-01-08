@@ -30,3 +30,32 @@ Feature: ETCD v2 Coordination Layer
 		Then listening on port 443
 		And is using the certificate '/src/https/example.cert'
 		And is using the key '/src/https/example.key'
+
+	Scenario: Provides command line interfaces for running the application
+		Given I have a register EtcD-V2 storage in the system
+		And I have registered the following host
+		"""
+{
+	"name" : "community",
+	"host" : "community.meschbach.com",
+	"https" : {
+		"key" : "private/com.meschbach.community_key",
+		"certificate" : "private/com.meschbach.community_certificate",
+		"locations" : {
+			"/images/upload" : {
+				"request_body_limit" : "32M"
+			}
+		}
+	},
+	"http" : { "https-redirect" : true }
+}
+		"""
+		And upstream 'community' for upstream 'localhost:9999'
+		And connector 'default-https' configured for TLS on port 443
+		And have host 'community.meschbach.com' use connector 'default-https'
+		When I run the catch up command
+		Then for host "community.meschbach.com" should redirect from port 80 to port 443
+		And listening on port 443
+		And is using the certificate 'private/com.meschbach.community_certificate'
+		And is using the key 'private/com.meschbach.community_key'
+		And the location '/images/upload' allows for 32M

@@ -77,3 +77,14 @@ end
 Then(/^is using the key '([^']+)'$/) do |key|
 	@conf.path_exists?( ["server", "ssl_certificate_key #{key}"] ).should be true
 end
+
+Given(/^connector '([^']+)' configured for TLS on port (\d+)$/) do |connector_name, port|
+	connector = @system.register_connector( connector_name, 'tls' )
+	connector.register_port( "tls#{port}", port )
+	connector
+end
+
+Given(/^have host '([^']+)' use connector '([^']+)'$/) do |host, connector|
+	host = @system.register_host( host )
+	host.use_connector( host.connectors.push( connector ) )
+end
